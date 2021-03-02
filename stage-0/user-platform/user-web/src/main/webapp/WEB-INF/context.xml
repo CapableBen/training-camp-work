@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+<!--	<Resource name="jdbc/UserPlatformDB"
+              type="javax.sql.DataSource"  auth="Container"
+              description="Derby database for User Platform"
+              maxActive="100" maxIdle="30" maxWait="10000"
+              username="" password="" 
+              driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+              url="jdbc:derby:/db/user-platform;create=true"/>-->
+
+	<Resource name="jdbc/mysql"
+			  type="javax.sql.DataSource"  auth="Container"
+			  description="Derby database for User Platform"
+			  maxActive="100" maxIdle="30" maxWait="10000"
+			  username="root" password="root"
+			  driverClassName="com.mysql.cj.jdbc.Driver"
+			  url="jdbc:mysql://localhost:3306/back"/>
+
+<!--	<Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource"
+			  maxActive="100" maxIdle="30" maxWait="10000"
+			  username="javauser" password="javadude" driverClassName="com.mysql.jdbc.Driver"
+			  url="jdbc:mysql://localhost:3306/javatest"/>-->
+
+</Context>
