@@ -32,11 +32,12 @@ public class RegisterController implements PageController {
     @GET
 //    @POST
     @Path("/submit") // /register -> RegisterController
-    public String execute(HttpServletRequest request, HttpServletResponse response) {
+    public String register(HttpServletRequest request, HttpServletResponse response) {
         String name = request.getParameter("name");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
+        // TODO validate
 
         User user = new User();
         user.setName(name);
@@ -51,5 +52,10 @@ public class RegisterController implements PageController {
         } else {
             return "index.jsp";
         }
+    }
+
+    @Override
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        return null;
     }
 }

@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
-import java.beans.*;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -50,9 +49,7 @@ public class FrontControllerServlet extends HttpServlet {
      */
     private void initHandleMethods() {
         ServiceLoader<Controller> load = ServiceLoader.load(Controller.class);
-        load.forEach(System.out::println);
         for (Controller controller : ServiceLoader.load(Controller.class)) {
-            System.out.println("controller = " + controller.toString());
             Class<?> controllerClass = controller.getClass();
             Path pathFromClass = controllerClass.getAnnotation(Path.class);
             String requestPath = pathFromClass.value();
@@ -63,17 +60,17 @@ public class FrontControllerServlet extends HttpServlet {
                 String path = requestPath;
                 Set<String> supportedHttpMethods = findSupportedHttpMethods(method);
                 Path pathFromMethod = method.getAnnotation(Path.class);
-                System.out.println("pathFromMethod = " + pathFromMethod);
+//                System.out.println("pathFromMethod = " + pathFromMethod);
                 if (pathFromMethod != null) {
                     path = path + pathFromMethod.value();
                 }
-                System.out.println("path = " + path);
+//                System.out.println("path = " + path);
                 handleMethodInfoMapping.put(path, new HandlerMethodInfo(path, method, supportedHttpMethods, controllerClass.getName()));
                 controllersMapping.put(path, controller);
             }
         }
-        System.out.println("handleMethodInfoMapping = " + handleMethodInfoMapping);
-        System.out.println("controllersMapping = " + controllersMapping);
+//        System.out.println("handleMethodInfoMapping = " + handleMethodInfoMapping);
+//        System.out.println("controllersMapping = " + controllersMapping);
     }
 
     /**
@@ -129,9 +126,7 @@ public class FrontControllerServlet extends HttpServlet {
                 if (handlerMethodInfo != null) {
 
                     String httpMethod = request.getMethod();
-
-                    System.out.println("httpMethod = " + httpMethod);
-
+//                    System.out.println("httpMethod = " + httpMethod);
                     if (!handlerMethodInfo.getSupportedHttpMethods().contains(httpMethod)) {
                         // HTTP 方法不支持
                         response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);

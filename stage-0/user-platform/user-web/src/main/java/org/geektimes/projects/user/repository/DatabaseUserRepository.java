@@ -6,7 +6,6 @@ import org.geektimes.projects.user.sql.DBConnectionManager;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -20,6 +19,8 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang.ClassUtils.wrapperToPrimitive;
+import static org.geektimes.projects.user.sql.DBConnectionManager.CREATE_USERS_TABLE_DDL_SQL;
+import static org.geektimes.projects.user.sql.DBConnectionManager.DROP_USERS_TABLE_DDL_SQL;
 
 public class DatabaseUserRepository implements UserRepository {
 
@@ -72,10 +73,25 @@ public class DatabaseUserRepository implements UserRepository {
 //            Connection connection = DriverManager.getConnection(databaseURL, "root", "root");
 
 //            Context context = new InitialContext();
+//            DataSource derbySource = (DataSource) context.lookup("jdbc/derby");
+//            Connection derbyConnection = derbySource.getConnection();
 //            DataSource dataSource = (DataSource) context.lookup("jdbc/mysql");
 //            Connection connection = dataSource.getConnection();
 
             Statement statement = connection.createStatement();
+
+            DatabaseMetaData meta = connection.getMetaData();
+            ResultSet resultSet = meta.getTables(null, null, null, new String[]{"TABLE"});
+            HashSet<String> set = new HashSet<>();
+            while (resultSet.next()) {
+                set.add(resultSet.getString("TABLE_NAME"));
+            }
+            if (set.contains("users".toUpperCase())) {
+                statement.execute(DROP_USERS_TABLE_DDL_SQL);
+//                statement.execute(DROP_USERS_TABLE_DDL_MY_SQL);
+            }
+            statement.execute(CREATE_USERS_TABLE_DDL_SQL);
+//            statement.execute(CREATE_USERS_TABLE_DDL_MY_SQL);
 
             StringBuilder builder = new StringBuilder("INSERT INTO users(name,password,email,phoneNumber) VALUES (");
             Stream.of(values).forEach(s -> builder.append("'").append(s).append("',"));
@@ -83,12 +99,14 @@ public class DatabaseUserRepository implements UserRepository {
             builder.append(")");
             System.out.println("execute sql = " + builder.toString());
 
-            return statement.execute(builder.toString());
+            statement.execute(builder.toString()); // false
+            return true;
         } catch (SQLException e) {
             COMMON_EXCEPTION_HANDLER.accept(e);
+            return false;
         }
-        return false;
     }
+
 
     @Override
     public boolean deleteById(Long userId) {
