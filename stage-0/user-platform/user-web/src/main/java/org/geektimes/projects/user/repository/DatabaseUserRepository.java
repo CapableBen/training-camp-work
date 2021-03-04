@@ -96,6 +96,8 @@ public class DatabaseUserRepository implements UserRepository {
             System.out.println("execute sql = " + builder.toString());
 
             statement.execute(builder.toString()); // false
+//            statement.close();
+            connection.close();
             return true;
         } catch (SQLException | ClassNotFoundException e) {
             COMMON_EXCEPTION_HANDLER.accept(e);
