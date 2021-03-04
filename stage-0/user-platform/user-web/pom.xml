@@ -54,18 +54,11 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.1</version>
                 <configuration>
-                    <contextFile>
-                        ${basedir}/src/main/webapp/WEB-INF/context.xml
-                    </contextFile>
-                    <defaultContextFile>
-                        ${basedir}/src/main/webapp/WEB-INF/context.xml
-                    </defaultContextFile>
-                    <enableNaming>
-                        true
-                    </enableNaming>
-                    <useNaming>
-                        true
-                    </useNaming>
+                    <mode>context</mode>
+                    <contextFile>src/main/webapp/WEB-INF/context.xml</contextFile>
+                    <defaultContextFile>src/main/webapp/WEB-INF/context.xml</defaultContextFile>
+                    <enableNaming>true</enableNaming>
+                    <useNaming>true</useNaming>
                 </configuration>
                 <executions>
                     <execution>
@@ -84,30 +77,5 @@
             </plugin>
         </plugins>
     </build>
-
-<!--    <build>
-        <plugins>
-            &lt;!&ndash; Tomcat Maven 插件用于构建可执行 war &ndash;&gt;
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <id>tomcat-run</id>
-                        <goals>
-                            &lt;!&ndash; 最终打包成可执行的jar包 &ndash;&gt;
-                            <goal>exec-war-only</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            &lt;!&ndash; ServletContext 路径 &ndash;&gt;
-                            <path>/</path>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>-->
 
 </project>

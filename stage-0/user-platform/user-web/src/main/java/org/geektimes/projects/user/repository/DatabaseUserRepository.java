@@ -6,6 +6,7 @@ import org.geektimes.projects.user.sql.DBConnectionManager;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -19,8 +20,7 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang.ClassUtils.wrapperToPrimitive;
-import static org.geektimes.projects.user.sql.DBConnectionManager.CREATE_USERS_TABLE_DDL_SQL;
-import static org.geektimes.projects.user.sql.DBConnectionManager.DROP_USERS_TABLE_DDL_SQL;
+import static org.geektimes.projects.user.sql.DBConnectionManager.*;
 
 public class DatabaseUserRepository implements UserRepository {
 
@@ -66,32 +66,28 @@ public class DatabaseUserRepository implements UserRepository {
         String[] values = of(user.getName(), user.getPassword(), user.getEmail(), user.getPhoneNumber());
 
         try {
+            // derby DriverManager
+            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
             String databaseURL = "jdbc:derby:/db/user-platform;create=true";
             Connection connection = DriverManager.getConnection(databaseURL);
-
-//            String databaseURL = "jdbc:mysql://localhost:3306/back?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong";
-//            Connection connection = DriverManager.getConnection(databaseURL, "root", "root");
-
-//            Context context = new InitialContext();
-//            DataSource derbySource = (DataSource) context.lookup("jdbc/derby");
-//            Connection derbyConnection = derbySource.getConnection();
-//            DataSource dataSource = (DataSource) context.lookup("jdbc/mysql");
-//            Connection connection = dataSource.getConnection();
-
             Statement statement = connection.createStatement();
 
-            DatabaseMetaData meta = connection.getMetaData();
-            ResultSet resultSet = meta.getTables(null, null, null, new String[]{"TABLE"});
-            HashSet<String> set = new HashSet<>();
-            while (resultSet.next()) {
-                set.add(resultSet.getString("TABLE_NAME"));
-            }
-            if (set.contains("users".toUpperCase())) {
-                statement.execute(DROP_USERS_TABLE_DDL_SQL);
-//                statement.execute(DROP_USERS_TABLE_DDL_MY_SQL);
-            }
-            statement.execute(CREATE_USERS_TABLE_DDL_SQL);
-//            statement.execute(CREATE_USERS_TABLE_DDL_MY_SQL);
+            // mysql DriverManager
+//            Class.forName("com.mysql.cj.jdbc.Driver");
+//            String databaseURL = "jdbc:mysql://localhost:3306/back?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong";
+//            Connection connection = DriverManager.getConnection(databaseURL, "root", "root");
+//            Statement statement = connection.createStatement();
+
+//            Context context = new InitialContext();
+            // jndi lookup dataSource derby
+//            DataSource dataSource = (DataSource) context.lookup("java:/comp/env/jdbc/derby");
+            // jndi lookup dataSource mysql
+//            DataSource dataSource = (DataSource) context.lookup("java:/comp/env/jdbc/mysql");
+//            Connection connection = dataSource.getConnection();
+//            Statement statement = connection.createStatement();
+
+            initDerby(connection, statement);
+//            initMysql(statement);
 
             StringBuilder builder = new StringBuilder("INSERT INTO users(name,password,email,phoneNumber) VALUES (");
             Stream.of(values).forEach(s -> builder.append("'").append(s).append("',"));
@@ -101,12 +97,29 @@ public class DatabaseUserRepository implements UserRepository {
 
             statement.execute(builder.toString()); // false
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             COMMON_EXCEPTION_HANDLER.accept(e);
             return false;
         }
     }
 
+    private void initDerby(Connection connection, Statement statement) throws SQLException {
+        DatabaseMetaData meta = connection.getMetaData();
+        ResultSet resultSet = meta.getTables(null, null, null, new String[]{"TABLE"});
+        HashSet<String> set = new HashSet<>();
+        while (resultSet.next()) {
+            set.add(resultSet.getString("TABLE_NAME"));
+        }
+        if (set.contains("users".toUpperCase())) {
+            statement.execute(DROP_USERS_TABLE_DDL_SQL);
+        }
+        statement.execute(CREATE_USERS_TABLE_DDL_SQL);
+    }
+
+    private void initMysql(Statement statement) throws SQLException {
+        statement.execute(DROP_USERS_TABLE_DDL_MY_SQL);
+        statement.execute(CREATE_USERS_TABLE_DDL_MY_SQL);
+    }
 
     @Override
     public boolean deleteById(Long userId) {
