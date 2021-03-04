@@ -48,14 +48,14 @@ public class FrontControllerServlet extends HttpServlet {
      * 利用 ServiceLoader 技术（Java SPI）
      */
     private void initHandleMethods() {
-        ServiceLoader<Controller> load = ServiceLoader.load(Controller.class);
         for (Controller controller : ServiceLoader.load(Controller.class)) {
             Class<?> controllerClass = controller.getClass();
             Path pathFromClass = controllerClass.getAnnotation(Path.class);
             String requestPath = pathFromClass.value();
-            Method[] publicMethods = controllerClass.getMethods();
+//            Method[] publicMethods = controllerClass.getMethods();
+            Method[] publicMethods = controllerClass.getDeclaredMethods();
+//            System.out.println("publicMethods = " + publicMethods);
             // 处理方法支持的 HTTP 方法集合
-            // TODO
             for (Method method : publicMethods) {
                 String path = requestPath;
                 Set<String> supportedHttpMethods = findSupportedHttpMethods(method);
@@ -63,6 +63,8 @@ public class FrontControllerServlet extends HttpServlet {
 //                System.out.println("pathFromMethod = " + pathFromMethod);
                 if (pathFromMethod != null) {
                     path = path + pathFromMethod.value();
+                }else {
+                    continue;
                 }
 //                System.out.println("path = " + path);
                 handleMethodInfoMapping.put(path, new HandlerMethodInfo(path, method, supportedHttpMethods, controllerClass.getName()));
@@ -114,8 +116,7 @@ public class FrontControllerServlet extends HttpServlet {
         String servletContextPath = request.getContextPath();
         String prefixPath = servletContextPath;
         // 映射路径（子路径）
-        String requestMappingPath = substringAfter(requestURI,
-                StringUtils.replace(prefixPath, "//", "/"));
+        String requestMappingPath = substringAfter(requestURI, StringUtils.replace(prefixPath, "//", "/"));
         // 映射到 Controller
         Controller controller = controllersMapping.get(requestMappingPath);
 
@@ -126,7 +127,6 @@ public class FrontControllerServlet extends HttpServlet {
                 if (handlerMethodInfo != null) {
 
                     String httpMethod = request.getMethod();
-//                    System.out.println("httpMethod = " + httpMethod);
                     if (!handlerMethodInfo.getSupportedHttpMethods().contains(httpMethod)) {
                         // HTTP 方法不支持
                         response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
@@ -158,7 +158,6 @@ public class FrontControllerServlet extends HttpServlet {
                     } else if (controller instanceof RestController) {
                         // TODO
                     }
-
                 }
             } catch (Throwable throwable) {
                 if (throwable.getCause() instanceof IOException) {
