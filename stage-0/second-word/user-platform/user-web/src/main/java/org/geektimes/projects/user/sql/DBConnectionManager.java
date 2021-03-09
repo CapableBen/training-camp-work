@@ -91,6 +91,14 @@ public class DBConnectionManager { // JNDI Component
             "phoneNumber VARCHAR(64) NOT NULL" +
             ")";
 
+//    public static final String CREATE_USERS_TABLE_DDL_SQL = "CREATE TABLE users(" +
+//            "id INT NOT NULL PRIMARY KEY, " +
+//            "name VARCHAR(16) NOT NULL, " +
+//            "password VARCHAR(64) NOT NULL, " +
+//            "email VARCHAR(64) NOT NULL, " +
+//            "phoneNumber VARCHAR(64) NOT NULL" +
+//            ")";
+
     public static final String INSERT_USER_DML_SQL = "INSERT INTO users(name,password,email,phoneNumber) VALUES " +
             "('A','******','a@gmail.com','1') , " +
             "('B','******','b@gmail.com','2') , " +

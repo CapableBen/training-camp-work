@@ -99,10 +99,15 @@
             </dependency>
 
             <!-- Hibernate Validator -->
-            <dependency>
+            <!--<dependency>
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate.validator.version}</version>
+            </dependency>-->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>5.1.0.Final</version>
             </dependency>
 
         </dependencies>

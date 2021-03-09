@@ -5,6 +5,7 @@ import org.geektimes.context.ComponentContext;
 import org.geektimes.projects.user.domain.User;
 import org.geektimes.projects.user.sql.DBConnectionManager;
 
+import javax.persistence.EntityManager;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -16,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.apache.commons.lang.ClassUtils.wrapperToPrimitive;
+import static org.geektimes.projects.user.sql.DBConnectionManager.CREATE_USERS_TABLE_DDL_SQL;
+import static org.geektimes.projects.user.sql.DBConnectionManager.DROP_USERS_TABLE_DDL_SQL;
 
 public class DatabaseUserRepository implements UserRepository {
 

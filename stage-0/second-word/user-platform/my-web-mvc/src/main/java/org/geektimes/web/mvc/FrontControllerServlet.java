@@ -4,19 +4,14 @@ import org.apache.commons.lang.StringUtils;
 import org.geektimes.web.mvc.controller.Controller;
 import org.geektimes.web.mvc.controller.PageController;
 import org.geektimes.web.mvc.controller.RestController;
-import org.geektimes.web.mvc.header.CacheControlHeaderWriter;
-import org.geektimes.web.mvc.header.annotation.CacheControl;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
 import java.io.IOException;
@@ -57,18 +52,20 @@ public class FrontControllerServlet extends HttpServlet {
             Class<?> controllerClass = controller.getClass();
             Path pathFromClass = controllerClass.getAnnotation(Path.class);
             String requestPath = pathFromClass.value();
-            Method[] publicMethods = controllerClass.getMethods();
+            Method[] publicMethods = controllerClass.getDeclaredMethods();
             // 处理方法支持的 HTTP 方法集合
             for (Method method : publicMethods) {
+                String path = requestPath;
                 Set<String> supportedHttpMethods = findSupportedHttpMethods(method);
                 Path pathFromMethod = method.getAnnotation(Path.class);
                 if (pathFromMethod != null) {
-                    requestPath += pathFromMethod.value();
+                    path = path + pathFromMethod.value();
+                }else {
+                    continue;
                 }
-                handleMethodInfoMapping.put(requestPath,
-                        new HandlerMethodInfo(requestPath, method, supportedHttpMethods));
+                handleMethodInfoMapping.put(path, new HandlerMethodInfo(path, method, supportedHttpMethods, controllerClass.getName()));
+                controllersMapping.put(path, controller);
             }
-            controllersMapping.put(requestPath, controller);
         }
     }
 
@@ -134,8 +131,15 @@ public class FrontControllerServlet extends HttpServlet {
                     }
 
                     if (controller instanceof PageController) {
-                        PageController pageController = PageController.class.cast(controller);
-                        String viewPath = pageController.execute(request, response);
+//                        PageController pageController = PageController.class.cast(controller);
+//                        String viewPath = pageController.execute(request, response);
+
+                        // 反射获取url对应方法
+                        Method handlerMethod = handlerMethodInfo.getHandlerMethod();
+                        String controllerName = handlerMethodInfo.getControllerName();
+                        Class<?> klass = Class.forName(controllerName);
+                        String viewPath = (String) handlerMethod.invoke(klass.newInstance(), request, response);
+
                         // 页面请求 forward
                         // request -> RequestDispatcher forward
                         // RequestDispatcher requestDispatcher = request.getRequestDispatcher(viewPath);

@@ -1,11 +1,24 @@
 package org.geektimes.projects.user.service;
 
+import org.geektimes.context.ComponentContext;
 import org.geektimes.projects.user.domain.User;
+import org.geektimes.projects.user.orm.jpa.DelegatingEntityManager;
+import org.geektimes.projects.user.sql.DBConnectionManager;
 import org.geektimes.projects.user.sql.LocalTransactional;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.sql.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.geektimes.projects.user.sql.DBConnectionManager.CREATE_USERS_TABLE_DDL_SQL;
+import static org.geektimes.projects.user.sql.DBConnectionManager.DROP_USERS_TABLE_DDL_SQL;
 
 public class UserServiceImpl implements UserService {
 
@@ -22,9 +35,28 @@ public class UserServiceImpl implements UserService {
         // before process
 //        EntityTransaction transaction = entityManager.getTransaction();
 //        transaction.begin();
+        initDerby();
 
         // 主调用
+//        entityManager.persist(user);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        // cache the factory somewhere
+        Validator validator = factory.getValidator();
+
+        // 校验结果
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+
+        violations.forEach(c -> {
+            System.out.println(c.getMessage());
+        });
+
         entityManager.persist(user);
+
+//        EntityTransaction transaction = entityManager.getTransaction();
+//        transaction.begin();
+//        entityManager.persist(user);
+//        transaction.commit();
+//        System.out.println(entityManager.find(User.class));
 
         // 调用其他方法方法
         update(user); // 涉及事务
@@ -53,7 +85,27 @@ public class UserServiceImpl implements UserService {
         // after process
         // transaction.commit();
 
-        return false;
+        return true;
+    }
+
+    private void initDerby() {
+        try {
+            DBConnectionManager dbConnectionManager = ComponentContext.getInstance().getComponent("bean/DBConnectionManager");
+            Connection connection = dbConnectionManager.getConnection();
+            Statement statement = connection.createStatement();
+            DatabaseMetaData meta = connection.getMetaData();
+            ResultSet resultSet = meta.getTables(null, null, null, new String[]{"TABLE"});
+            HashSet<String> set = new HashSet<>();
+            while (resultSet.next()) {
+                set.add(resultSet.getString("TABLE_NAME"));
+            }
+            if (set.contains("users".toUpperCase())) {
+                statement.execute(DROP_USERS_TABLE_DDL_SQL);
+            }
+            statement.execute(CREATE_USERS_TABLE_DDL_SQL);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
