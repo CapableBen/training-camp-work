@@ -3,6 +3,7 @@ package org.geektimes.projects.user.web.controller;
 import org.geektimes.context.ComponentContext;
 import org.geektimes.projects.user.domain.User;
 import org.geektimes.projects.user.service.UserService;
+import org.geektimes.projects.user.validator.bean.validation.ValidatorUtils;
 import org.geektimes.web.mvc.controller.PageController;
 
 import javax.annotation.Resource;
@@ -11,6 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.geektimes.projects.user.validator.bean.validation.ValidatorUtils.idGenerator;
 
 /**
  * 1.通过课堂上的简易版依赖注入和依赖查找，实现用户注册功能
@@ -41,14 +46,12 @@ public class RegisterController implements PageController {
         // TODO validate
 
         User user = new User();
-//        user.setId(1L);
+        user.setId(idGenerator());
         user.setName(name);
         user.setPassword(password);
         user.setEmail(email);
         user.setPhoneNumber(phoneNumber);
         System.out.println("user = " + user);
-
-        System.out.println("userService = " + userService);
 
         boolean register = userService.register(user);
         if (register) {
@@ -59,7 +62,7 @@ public class RegisterController implements PageController {
     }
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+    public String execute(HttpServletRequest request, HttpServletResponse response) {
         return null;
     }
 }

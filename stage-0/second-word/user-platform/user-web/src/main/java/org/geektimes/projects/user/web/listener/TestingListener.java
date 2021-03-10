@@ -2,6 +2,7 @@ package org.geektimes.projects.user.web.listener;
 
 import org.geektimes.context.ComponentContext;
 import org.geektimes.projects.user.domain.User;
+import org.geektimes.projects.user.service.UserServiceImpl;
 import org.geektimes.projects.user.sql.DBConnectionManager;
 
 import javax.persistence.EntityManager;
@@ -9,6 +10,8 @@ import javax.persistence.EntityTransaction;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.logging.Logger;
+
+import static org.geektimes.projects.user.validator.bean.validation.ValidatorUtils.idGenerator;
 
 /**
  * 测试用途
@@ -23,18 +26,21 @@ public class TestingListener implements ServletContextListener {
         ComponentContext context = ComponentContext.getInstance();
         DBConnectionManager dbConnectionManager = context.getComponent("bean/DBConnectionManager");
         dbConnectionManager.getConnection();
-//        testUser(dbConnectionManager.getEntityManager());
+        testUser(dbConnectionManager.getEntityManager());
         logger.info("所有的 JNDI 组件名称：[");
         context.getComponentNames().forEach(logger::info);
         logger.info("]");
     }
 
     private void testUser(EntityManager entityManager) {
+        UserServiceImpl.initDerby();
+
         User user = new User();
+        user.setId(idGenerator());
         user.setName("小马哥");
         user.setPassword("******");
         user.setEmail("mercyblitz@gmail.com");
-        user.setPhoneNumber("abcdefg");
+        user.setPhoneNumber("15011111111");
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         entityManager.persist(user);

@@ -1,13 +1,14 @@
 package org.geektimes.projects.user.domain;
 
+import org.geektimes.projects.user.validator.bean.validation.PasswordValid;
+import org.geektimes.projects.user.validator.bean.validation.PhoneValid;
+import org.geektimes.projects.user.validator.bean.validation.IdValid;
+
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
-
-import static javax.persistence.GenerationType.AUTO;
 
 /**
  * 用户领域对象
@@ -19,8 +20,9 @@ import static javax.persistence.GenerationType.AUTO;
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = AUTO)
+//    @GeneratedValue(strategy = IDENTITY)
     @NotNull
+    @IdValid()
     private Long id;
 
     @Column
@@ -29,12 +31,14 @@ public class User implements Serializable {
     @Column
 //    @Max(32)
 //    @Min(6)
+    @PasswordValid
     private String password;
 
     @Column
     private String email;
 
     @Column
+    @PhoneValid
     private String phoneNumber;
 
     public Long getId() {

@@ -32,31 +32,24 @@ public class UserServiceImpl implements UserService {
     // 默认需要事务
     @LocalTransactional
     public boolean register(User user) {
-        // before process
-//        EntityTransaction transaction = entityManager.getTransaction();
-//        transaction.begin();
         initDerby();
+        // before process
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
 
-        // 主调用
-//        entityManager.persist(user);
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        // cache the factory somewhere
-        Validator validator = factory.getValidator();
-
+//        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+//        // cache the factory somewhere
+//        Validator validator = factory.getValidator();
         // 校验结果
         Set<ConstraintViolation<User>> violations = validator.validate(user);
+        violations.forEach(c -> System.out.println(c.getMessage()));
+        // TODO 返回错误信息 -> 页面
+        if (violations.size() > 0) {
+            return false;
+        }
 
-        violations.forEach(c -> {
-            System.out.println(c.getMessage());
-        });
-
+        // 主调用
         entityManager.persist(user);
-
-//        EntityTransaction transaction = entityManager.getTransaction();
-//        transaction.begin();
-//        entityManager.persist(user);
-//        transaction.commit();
-//        System.out.println(entityManager.find(User.class));
 
         // 调用其他方法方法
         update(user); // 涉及事务
@@ -83,12 +76,12 @@ public class UserServiceImpl implements UserService {
         // 这种情况 update 方法同样共享了 register 方法物理事务，并且通过 Savepoint 来实现局部提交和回滚
 
         // after process
-        // transaction.commit();
+         transaction.commit();
 
         return true;
     }
 
-    private void initDerby() {
+    public static void initDerby() {
         try {
             DBConnectionManager dbConnectionManager = ComponentContext.getInstance().getComponent("bean/DBConnectionManager");
             Connection connection = dbConnectionManager.getConnection();
@@ -99,10 +92,13 @@ public class UserServiceImpl implements UserService {
             while (resultSet.next()) {
                 set.add(resultSet.getString("TABLE_NAME"));
             }
-            if (set.contains("users".toUpperCase())) {
+            /*if (set.contains("users".toUpperCase())) {
                 statement.execute(DROP_USERS_TABLE_DDL_SQL);
             }
-            statement.execute(CREATE_USERS_TABLE_DDL_SQL);
+            statement.execute(CREATE_USERS_TABLE_DDL_SQL);*/
+            if (!set.contains("users".toUpperCase())) {
+                statement.execute(CREATE_USERS_TABLE_DDL_SQL);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
