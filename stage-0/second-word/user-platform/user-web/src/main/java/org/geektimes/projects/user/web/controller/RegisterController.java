@@ -1,9 +1,7 @@
 package org.geektimes.projects.user.web.controller;
 
-import org.geektimes.context.ComponentContext;
 import org.geektimes.projects.user.domain.User;
 import org.geektimes.projects.user.service.UserService;
-import org.geektimes.projects.user.validator.bean.validation.ValidatorUtils;
 import org.geektimes.web.mvc.controller.PageController;
 
 import javax.annotation.Resource;
@@ -11,9 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.geektimes.projects.user.validator.bean.validation.ValidatorUtils.idGenerator;
 
@@ -26,7 +21,10 @@ import static org.geektimes.projects.user.validator.bean.validation.ValidatorUti
 @Path("/register")
 public class RegisterController implements PageController {
 
-    private final UserService userService = ComponentContext.getInstance().getComponent("bean/UserService");
+//    private final UserService userService = ComponentContext.getInstance().getComponent("bean/UserService");
+
+    @Resource(name = "bean/UserService")
+    private static UserService userService;
 
     @GET
 //    @POST

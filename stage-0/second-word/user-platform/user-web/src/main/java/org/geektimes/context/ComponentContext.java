@@ -2,12 +2,14 @@ package org.geektimes.context;
 
 import org.geektimes.function.ThrowableAction;
 import org.geektimes.function.ThrowableFunction;
+import org.geektimes.web.mvc.controller.Controller;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.naming.*;
 import javax.servlet.ServletContext;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.logging.Logger;
@@ -64,6 +66,29 @@ public class ComponentContext {
         initEnvContext();
         instantiateComponents();
         initializeComponents();
+        injectControllerAnnotation(); // Controller Resource字段 注入
+    }
+
+    private void injectControllerAnnotation() {
+        for (Controller controller : ServiceLoader.load(Controller.class)) {
+            Class<?> controllerClass = controller.getClass();
+            Field[] declaredFields = controllerClass.getDeclaredFields();
+            Stream.of(declaredFields)
+                    .filter(field -> field.isAnnotationPresent(Resource.class))
+                    .forEach(field -> injectControllerField(controller, field));
+        }
+    }
+
+    private void injectControllerField(Controller controller, Field field) {
+        Resource resource = field.getAnnotation(Resource.class);
+        String resourceName = resource.name();
+        try {
+            Object injectedObject = lookupComponent(resourceName);
+            field.setAccessible(true);
+            field.set(controller, injectedObject);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
