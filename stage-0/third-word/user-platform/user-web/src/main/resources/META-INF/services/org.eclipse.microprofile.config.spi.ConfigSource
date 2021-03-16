@@ -1,0 +1,4 @@
+org.geektimes.configuration.microprofile.config.source.ServletContextPropertiesConfigSource
+org.geektimes.configuration.microprofile.config.source.LocalPropertiesConfigSource
+org.geektimes.configuration.microprofile.config.source.JavaSystemPropertiesConfigSource
+org.geektimes.configuration.microprofile.config.source.OsPropertiesConfigSource
