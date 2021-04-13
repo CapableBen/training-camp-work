@@ -1,0 +1,6 @@
+org.geektimes.cache.serialization.StringSerialization
+org.geektimes.cache.serialization.IntegerSerialization
+org.geektimes.cache.serialization.JSONObjectSerialization
+org.geektimes.cache.serialization.BytesSerialization
+org.geektimes.cache.serialization.ByteBufferSerialization
+org.geektimes.cache.serialization.ObjectSerialization
