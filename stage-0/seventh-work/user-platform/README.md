@@ -15,5 +15,5 @@
 4. java -jar user-web/target/user-web-v1-SNAPSHOT-war-exec.jar
 
 5. 访问：http://localhost:8080/oauth/login
-    - ​ 如果遇到Failed connect to github.com:443; Connection timed out 请开代理 或者 重试.
+    - ​ 如果遇到org.apache.http.conn.HttpHostConnectException: Connect to github.com:443 [github.com/192.30.255.112] failed: Connection timed out: connect 请开代理 或者 重试.
 
