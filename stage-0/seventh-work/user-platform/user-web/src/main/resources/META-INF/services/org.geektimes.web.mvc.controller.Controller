@@ -1,0 +1,3 @@
+org.geektimes.projects.user.web.controller.HelloWorldController
+org.geektimes.projects.user.web.controller.GitHubOAuth2Controller
+org.geektimes.projects.user.web.controller.GitHubCallBackController
