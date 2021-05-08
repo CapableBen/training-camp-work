@@ -3,14 +3,22 @@ package org.geekbang.springcache.work.controller;
 import org.geekbang.springcache.work.domain.Book;
 import org.geekbang.springcache.work.service.CacheService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.swing.*;
 import java.util.List;
 
 @RestController
 public class DemoController {
+
+//    Spring Cache 与 Redis 整合
+//      如何清除某个 Spring Cache 所有的 Keys 关联的对象
+//          如果 Redis 中心化方案，Redis + Sentinel
+//          如果 Redis 去中心化方案，Redis Cluster
+//      如何将 RedisCacheManager 与 @Cacheable 注解打通
 
     @Autowired
     private CacheService cacheService;
