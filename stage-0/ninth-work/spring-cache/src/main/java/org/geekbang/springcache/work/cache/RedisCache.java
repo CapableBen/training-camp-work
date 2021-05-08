@@ -95,7 +95,7 @@ public class RedisCache implements Cache {
         // name:key
         // String 类型的 key :
 //        jedis.scan()
-        byte[] serialize = serialize(name + "*");
+        byte[] serialize = serialize(name + ":*");
         Set<byte[]> keys = jedis.keys(serialize);
         for (byte[] bytes : keys) {
             jedis.del(bytes);
