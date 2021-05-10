@@ -2,6 +2,9 @@ package org.geekbang.springcache.work.domain;
 
 import java.io.Serializable;
 
+/**
+ * @author LP
+ */
 public class Book implements Serializable {
 
     private String id;

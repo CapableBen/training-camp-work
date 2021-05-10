@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import redis.clients.jedis.JedisPool;
 
 import javax.swing.*;
 import java.util.List;
@@ -20,8 +21,12 @@ public class DemoController {
 //          如果 Redis 去中心化方案，Redis Cluster
 //      如何将 RedisCacheManager 与 @Cacheable 注解打通
 
-    @Autowired
     private CacheService cacheService;
+
+    @Autowired
+    public void getCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
 
     @RequestMapping(value = "/get")
     public String cacheable(@RequestParam String id) {

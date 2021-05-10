@@ -17,6 +17,7 @@
 package org.geekbang.springcache.work.cache;
 
 import org.geekbang.springcache.work.domain.Book;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.support.AbstractCacheManager;
@@ -40,18 +41,25 @@ import java.util.List;
 @Configuration
 public class RedisCacheManager extends AbstractCacheManager {
 
-    private final JedisPool jedisPool;
+    private JedisPool jedisPool;
+
+    @Autowired
+    public void getJedisPool(JedisPool jedisPool) {
+        this.jedisPool = jedisPool;
+    }
+
+    //    private final JedisPool jedisPool;
 
     public static final String DEFAULT_CACHE_NAME = "book";
 
     public RedisCacheManager() {
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxTotal(1024);
-        jedisPoolConfig.setMaxIdle(100);
-        jedisPoolConfig.setMaxWaitMillis(100);
-        jedisPoolConfig.setTestOnBorrow(false);
-        jedisPoolConfig.setTestOnReturn(true);
-        this.jedisPool = new JedisPool(jedisPoolConfig, "127.0.0.1", 6379, 2000);
+//        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+//        jedisPoolConfig.setMaxTotal(1024);
+//        jedisPoolConfig.setMaxIdle(100);
+//        jedisPoolConfig.setMaxWaitMillis(100);
+//        jedisPoolConfig.setTestOnBorrow(false);
+//        jedisPoolConfig.setTestOnReturn(true);
+//        this.jedisPool = new JedisPool(jedisPoolConfig, "127.0.0.1", 6379, 2000);
     }
 
     @Override
@@ -62,6 +70,7 @@ public class RedisCacheManager extends AbstractCacheManager {
         return caches;
     }
 
+    @Override
     protected Cache getMissingCache(String name) {
         Jedis jedis = jedisPool.getResource();
         return new RedisCache(name, jedis);
