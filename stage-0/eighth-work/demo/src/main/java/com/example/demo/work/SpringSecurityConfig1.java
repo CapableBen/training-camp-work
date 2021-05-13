@@ -1,4 +1,3 @@
-/*
 package com.example.demo.work;
 
 import org.springframework.context.annotation.Configuration;
@@ -35,4 +34,3 @@ public class SpringSecurityConfig1 extends WebSecurityConfigurerAdapter implemen
         return -1;
     }
 }
-*/
