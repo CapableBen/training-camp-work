@@ -65,14 +65,14 @@
             <version>${commons-configuration.version}</version>
         </dependency>
 
+        <!--org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration-->
+        <!--https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/amqp/RabbitAutoConfiguration.java-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.1.4</version>
         </dependency>
 
-        <!--org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration-->
-        <!--https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/amqp/RabbitAutoConfiguration.java-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
