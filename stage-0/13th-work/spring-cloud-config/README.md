@@ -1,26 +1,15 @@
-#### 作业 自定义mybatis-spring-boot-starter
+#### 作业 基于文件系统为 Spring Cloud 提供 PropertySourceLocator
+实现
 
-- 将上次 MyBatis @Enable 模块驱动，封装成 Spring Boot Starter ⽅式
-  参考：MyBatis Spring Project ⾥⾯会有 Spring Boot 实现  
+- 配置文件命名规则（META-INF/config/default.properties或者 META-INF/config/default.yaml）
+- 可选：实现文件修改通知
 
-###### 0.启动 mysql 
+###### 0.启动项目 访问
 
-###### 1.修改 src/main/resources/application.properties 数据库配置文件
+- http://localhost:8080/
 
-###### 2.启动 mybatis-spring-boot-starter-sample 项目
+   查看控制台输出
 
-###### 3.访问
 
-- http://localhost:8080/add
+说明： 基本实现自定义PropertySourceLocator配置，也看了小马哥写的通过 watchService api 实现监听文件修改事件，但是个人疑问是，怎么实现文件修改通知，要怎么把动态修改的值，整合到 PropertySource 里面去，实现当用户获取该值永远处于最新。或者说 PropertySource 一般的使用场景实什么？ 一般需要什么功能和实现？
 
-   初始化
-
-- http://localhost:8080/list
-
-   获取全部
-   
-- http://localhost:8080/get?id=1
-
-   根据id查询
-   
-说明： 假如需要引入到其他项目，需要先install mybatis-spring-boot-starter 模块，然后引入并配置
