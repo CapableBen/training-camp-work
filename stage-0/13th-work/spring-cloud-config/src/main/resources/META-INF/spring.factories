@@ -1,0 +1,3 @@
+org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+  com.geekbang.springcloudconfig.config.CustomPropertySourceLocator,\
+  com.geekbang.springcloudconfig.config.MyConfigBootstrapConfiguration
