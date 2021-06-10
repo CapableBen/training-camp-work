@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.geekbang.spring.cloud.bus.provider.redis.BusRedisAutoConfiguration

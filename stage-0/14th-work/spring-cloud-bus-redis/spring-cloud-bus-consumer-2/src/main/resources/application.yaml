@@ -1,0 +1,27 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: bus-consumer-2
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 0
+    timeout: 5000
+    jedis:
+      pool:
+        max-active: 200
+        max-wait: -1
+        max-idle: 10
+        min-idle: 0
+
+# 配置 Eureka Client（可参考 EurekaClientConfigBean）
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://127.0.0.1:12345/eureka'
+
+topic:
+  name: topic-1
