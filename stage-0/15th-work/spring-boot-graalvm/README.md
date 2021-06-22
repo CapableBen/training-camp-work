@@ -19,7 +19,7 @@
 
 - 2.新开teminal执行：
 
-  - curl --location --request GET "[http://localhost:8080/"](http://localhost:8080/)
+  - curl --location --request GET "http://localhost:8080/"
 
 
 
