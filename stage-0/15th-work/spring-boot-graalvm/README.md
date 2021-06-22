@@ -73,8 +73,10 @@
   本地安装docker：
 
   ```
+  # 通过build-image生成dockerimage，需要在mvn package生成spring-boot-graalvm-0.0.1-SNAPSHOT.jar.original文件
+  # spring-boot-maven-plugin 打包插件 classifier 不能指定
   mvn spring-boot:build-image
-  docker-compose up // 在docker中启动
+  docker-compose up
   ```
 
   直接执行打包和生成镜像：

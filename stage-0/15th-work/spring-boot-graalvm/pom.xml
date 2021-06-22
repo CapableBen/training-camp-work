@@ -69,7 +69,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <classifier>${repackage.classifier}</classifier>
+<!--                    <classifier>${repackage.classifier}</classifier>-->
                     <image>
                         <builder>${builder}</builder>
                         <env>
